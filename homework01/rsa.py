@@ -5,7 +5,6 @@ import typing as tp
 def is_prime(n: int) -> bool:
     """
     Tests to see if a number is prime.
-
     >>> is_prime(2)
     True
     >>> is_prime(11)
@@ -13,21 +12,24 @@ def is_prime(n: int) -> bool:
     >>> is_prime(8)
     False
     """
-    div = 1
-    for i in range(2, n):
-        if n % i == 0:
-            div = i
-    if div == 1:
-        return True
-    else:
+    from math import sqrt
+    if n < 2:
         return False
+    if n == 2:
+        return True
+    x = sqrt(n)
+    i = 2
+    while i <= x:
+        if n % i == 0:
+            return False
+        i += 1
+    return True
     pass
 
 
 def gcd(a: int, b: int) -> int:
     """
     Euclid's algorithm for determining the greatest common divisor.
-
     >>> gcd(12, 15)
     3
     >>> gcd(3, 7)
@@ -42,44 +44,28 @@ def gcd(a: int, b: int) -> int:
     return gcd
     pass
 
-
 def multiplicative_inverse(e: int, phi: int) -> int:
     """
     Euclid's extended algorithm for finding the multiplicative
     inverse of two numbers.
-
     >>> multiplicative_inverse(7, 40)
     23
     """
-    a = []
-    b = []
-    x = []
-    y = []
-    result_lst = []
-    while e % phi != 0:
-        a.append(phi)
-        b.append(e)
-        result_lst.append(phi // e)
-        mod = phi % e
-        phi = e
-        e = mod
-
-    result_lst.append(0)
-    x.append(0)
-    y.append(1)
-
-    j = len(result_lst) - 1
-    i = 0
-    while i < len(result_lst):
-        x.append(y[i])
-        y.append(x[i] - y[i] * result_lst[j])
-        i += 1
-        j -= 1
-
-    d = y[i] % a[0]
-    return d
+    arr = []
+    while e != 0:
+        arr.append((e, phi))
+        e2 = e
+        e = phi % e
+        phi = e2
+    x = 0
+    y = 1
+    while len(arr) != 0:
+        e, phi = arr.pop()
+        x2 = x
+        x = (y - (phi // e) * x)
+        y = x2
+    return ((x + phi) % phi)
     pass
-
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
     if not (is_prime(p) and is_prime(q)):
